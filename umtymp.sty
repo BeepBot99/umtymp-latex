@@ -1,0 +1,139 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{umtymp}[2024/03/10 UMTYMP Calculus 1B Homework Package]
+
+% Required Packages
+\RequirePackage{kvoptions}
+\RequirePackage{fancyhdr}
+\RequirePackage[letterpaper, margin=1in]{geometry}
+\RequirePackage{amsmath, amsthm}
+\RequirePackage{parskip}
+\RequirePackage{float, tikz, pgfplots}
+\RequirePackage[shortlabels]{enumitem}
+\RequirePackage[dvipsnames]{xcolor}
+\RequirePackage{environ}
+
+\pgfplotsset{compat=1.18}
+
+% Customization Commands
+\newcommand{\umtymp@name}{Do \textbackslash setname\{name\}}
+\newcommand{\umtymp@course}{Do \textbackslash setcourse\{course\}}
+\newcommand{\umtymp@week}{Do \textbackslash setweek\{week\}}
+\newcommand{\setname}[1]{\renewcommand{\umtymp@name}{#1}}
+\newcommand{\setcourse}[1]{\renewcommand{\umtymp@course}{#1}}
+\newcommand{\setweek}[1]{\renewcommand{\umtymp@week}{#1}}
+
+% Page Style Setup
+\pagestyle{fancy}
+\setlength{\headheight}{13.6pt}
+\fancyhead[R]{\umtymp@name}
+\fancyhead[L]{\umtymp@course \, Week \umtymp@week}
+
+% Custom Commands
+\newcommand{\diff}[1]{\mathrm{d}#1}
+\newcommand{\intdiff}[1]{\,\diff{#1}}
+\newcommand{\dt}{\intdiff{t}}
+\newcommand{\dx}{\intdiff{x}}
+\newcommand{\pdt}{\diff{t}}
+\newcommand{\pdx}{\diff{x}}
+\newcommand{\du}{\intdiff{u}}
+\newcommand{\pdu}{\diff{u}}
+\newcommand{\dv}{\diff{v}}
+\newcommand{\dudx}{\frac{\pdu}{\pdx}}
+\newcommand{\eval}[3]{\left[#1\right]_{#2}^{#3}}
+\newcommand{\dy}{\intdiff{y}}
+\newcommand{\pdy}{\diff{y}}
+\newcommand{\dydx}{\frac{\pdy}{\pdx}}
+\newcommand{\ddx}[1]{\frac{\mathrm{d}}{\pdx}\left(#1\right)}
+\newcommand{\ddt}[1]{\frac{\mathrm{d}}{\pdt}\left(#1\right)}
+\newcommand{\at}[2]{\left.#1\right|_{#2}}
+\newcommand{\dtheta}{\intdiff{\theta}}
+\newcommand{\pdtheta}{\diff{\theta}}
+\newcommand{\per}{\,.}
+\newcommand{\com}{\,,}
+\newcommand{\lh}{L'Hôpital's Rule}
+
+% Problem Environment Setup
+\newcounter{problemcount}
+\newenvironment{homework}{%
+  \begin{enumerate}[label=\textbf{(\umtymp@week.\arabic*)},ref=\umtymp@week.\arabic*]%
+    \setcounter{problemcount}{0}%
+}{%
+  \end{enumerate}%
+}
+
+\newcounter{partcount}[problemcount]
+
+\NewDocumentEnvironment{parts}{}{%
+  \setcounter{partcount}{0}%
+  \begin{enumerate}[label=(\alph*),ref=(\alph*)]%
+  \let\partproblem\item%
+}{%
+  \end{enumerate}%
+  \ifnum\value{problemcount}=4%
+    \qed%
+  \fi%
+}
+
+% Solution Environments
+\NewEnviron{solution}{%
+  \par\vspace{1em}%
+  \BODY%
+  \ifnum\value{problemcount}=4%
+    \qed%
+  \fi%
+}
+
+\NewDocumentEnvironment{partsolution}{}{%
+  \par\vspace{0.5em}%
+}{%
+}
+
+% Problem Command
+\newcommand{\problem}{%
+  \setcounter{figure}{0}%
+  \setcounter{equation}{0}%
+  \stepcounter{problemcount}%
+  \ifnum\value{problemcount}>1\newpage\fi%
+  \item%
+  \ifnum\value{problemcount}=4%
+    \textbf{Professional Problem.}\space%
+  \fi%
+}
+
+% Figure/Equation Numbering
+\renewcommand{\thefigure}{\umtymp@week.\arabic{problemcount}.\arabic{figure}}
+
+% Multialign Environment
+\makeatletter
+\newdimen\multialignsep@
+\def\multialign@preamble{%
+   &\hfil
+    \strut@
+    \setboxz@h{\@lign$\m@th\displaystyle{##}$}%
+    \ifmeasuring@\savefieldlength@\fi
+    \set@field
+    \tabskip\z@skip
+   &\setboxz@h{\@lign$\m@th\displaystyle{{}##}$}%
+    \ifmeasuring@\savefieldlength@\fi
+    \set@field
+    \hfil
+    \tabskip\multialignsep@
+}
+\NewEnviron{multialign}[1]{%
+  \multialignsep@=#1\let\align@preamble=\multialign@preamble
+  \begin{align}\BODY\end{align}}
+\NewEnviron{multialign*}[1]{%
+  \multialignsep@=#1\let\align@preamble=\multialign@preamble
+  \begin{align*}\BODY\end{align*}}
+\makeatother
+
+% Integration by Parts Command
+\newcommand{\ibp}[5]{
+    \begin{multialign*}{1cm}
+                  &\text{Let} \\
+                  &&u &= #1 &\dv &= #2 \intdiff{#5}\per\\
+                  &\text{Then} \qquad &\pdu &= #3 \intdiff{#5} & v &= #4\per
+    \end{multialign*}
+}
+
+\endinput
