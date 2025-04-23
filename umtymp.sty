@@ -51,6 +51,37 @@
 \newcommand{\per}{\,.}
 \newcommand{\com}{\,,}
 \newcommand{\lh}{L'Hôpital's Rule}
+\newcommand{\series}[1][1]{\sum_{n=#1}^\infty}
+\newcommand{\Lim}{\displaystyle\lim}
+\let\dlim\Lim
+\newcommand{\Int}{\displaystyle\int}
+\let\dint\Int
+\newcommand{\Sum}{\displaystyle\sum}
+\let\dsum\Sum
+\newcommand{\Series}[1][1]{\displaystyle\series[#1]}
+\let\dseries\Series
+\let\Frac\dfrac
+\newcommand{\tlim}{\lim_{t\to\infty}}
+\newcommand{\Tlim}{\displaystyle\tlim}
+\let\dtlim\Tlim
+\newcommand{\nlim}{\lim_{n\to\infty}}
+\newcommand{\Nlim}{\displaystyle\nlim}
+\let\dnlim\Nlim
+\newcommand{\infint}[1]{\tlim \int_{#1}^t}
+\newcommand{\Infint}{\displaystyle\infint}
+\let\dinfint\Infint
+\newcommand{\lt}{<}
+\newcommand{\gt}{>}
+\let\eps\varepsilon
+\newcommand{\nsum}[2]{\sum_{n=#1}^{#2}}
+\newcommand{\Nsum}[2]{\displaystyle\nsum{#1}{#2}}
+\let\dnsum\Nsum
+\newcommand{\isum}[2]{\sum_{i=#1}^{#2}}
+\newcommand{\Isum}[2]{\displaystyle\isum{#1}{#2}}
+\let\disum\Isum
+\newcommand{\braces}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\braces{#1_n}}
+\newcommand{\cont}[1]{\braces{#1, \cdots}}
 
 % Problem Environment Setup
 \newcounter{problemcount}
@@ -137,3 +168,4 @@
 }
 
 \endinput
+
