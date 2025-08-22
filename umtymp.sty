@@ -11,22 +11,32 @@
 \RequirePackage[shortlabels]{enumitem}
 \RequirePackage[dvipsnames]{xcolor}
 \RequirePackage{environ}
+\RequirePackage{etoolbox}
 
 \pgfplotsset{compat=1.18}
 
 % Customization Commands
 \newcommand{\umtymp@name}{Do \textbackslash setname\{name\}}
-\newcommand{\umtymp@course}{Do \textbackslash setcourse\{course\}}
-\newcommand{\umtymp@week}{Do \textbackslash setweek\{week\}}
+\newcommand{\umtymp@title}{Do \textbackslash settitle\{title\}}
+\newcommand{\umtymp@prefix}{}
+\newbool{umtymp@showProfProb}
+\setbool{umtymp@showProfProb}{true}
+\newbool{umtymp@oneProbPerPage}
+\setbool{umtymp@oneProbPerPage}{true}
+
 \newcommand{\setname}[1]{\renewcommand{\umtymp@name}{#1}}
-\newcommand{\setcourse}[1]{\renewcommand{\umtymp@course}{#1}}
-\newcommand{\setweek}[1]{\renewcommand{\umtymp@week}{#1}}
+\newcommand{\settitle}[1]{\renewcommand{\umtymp@title}{#1}}
+\newcommand{\setprefix}[1]{\renewcommand{\umtymp@prefix}{#1}}
+\newcommand{\showProfessionalProblem}{\setbool{umtymp@showProfProb}{true}}
+\newcommand{\hideProfessionalProblem}{\setbool{umtymp@showProfProb}{false}}
+\newcommand{\oneProblemPerPage}{\setbool{umtymp@oneProbPerPage}{true}}
+\newcommand{\multipleProblemsPerPage}{\setbool{umtymp@oneProbPerPage}{false}}
 
 % Page Style Setup
 \pagestyle{fancy}
 \setlength{\headheight}{13.6pt}
 \fancyhead[R]{\umtymp@name}
-\fancyhead[L]{\umtymp@course \, Week \umtymp@week}
+\fancyhead[L]{\umtymp@title}
 
 % Custom Commands
 \newcommand{\diff}[1]{\mathrm{d}#1}
@@ -51,35 +61,70 @@
 \newcommand{\per}{\,.}
 \newcommand{\com}{\,,}
 \newcommand{\lh}{L'Hôpital's Rule}
+\newcommand{\series}[1][1]{\sum_{n=#1}^\infty}
+\newcommand{\Lim}{\displaystyle\lim}
+\let\dlim\Lim
+\newcommand{\Int}{\displaystyle\int}
+\let\dint\Int
+\newcommand{\Sum}{\displaystyle\sum}
+\let\dsum\Sum
+\newcommand{\Series}[1][1]{\displaystyle\series[#1]}
+\let\dseries\Series
+\let\Frac\dfrac
+\newcommand{\tlim}{\lim_{t\to\infty}}
+\newcommand{\Tlim}{\displaystyle\tlim}
+\let\dtlim\Tlim
+\newcommand{\nlim}{\lim_{n\to\infty}}
+\newcommand{\Nlim}{\displaystyle\nlim}
+\let\dnlim\Nlim
+\newcommand{\infint}[1]{\tlim \int_{#1}^t}
+\newcommand{\Infint}{\displaystyle\infint}
+\let\dinfint\Infint
+\newcommand{\lt}{<}
+\newcommand{\gt}{>}
+\let\eps\varepsilon
+\newcommand{\nsum}[2]{\sum_{n=#1}^{#2}}
+\newcommand{\Nsum}[2]{\displaystyle\nsum{#1}{#2}}
+\let\dnsum\Nsum
+\newcommand{\isum}[2]{\sum_{i=#1}^{#2}}
+\newcommand{\Isum}[2]{\displaystyle\isum{#1}{#2}}
+\let\disum\Isum
+\newcommand{\braces}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\braces{#1_n}}
+\newcommand{\cont}[1]{\braces{#1, \cdots}}
 
 % Problem Environment Setup
 \newcounter{problemcount}
 \newenvironment{homework}{%
-  \begin{enumerate}[label=\textbf{(\umtymp@week.\arabic*)},ref=\umtymp@week.\arabic*]%
-    \setcounter{problemcount}{0}%
-}{%
-  \end{enumerate}%
+\begin{enumerate}[label=\textbf{(\umtymp@prefix\arabic*)},ref=\umtymp@prefix\arabic*]%
+  \setcounter{problemcount}{0}%
+  }{%
+\end{enumerate}%
 }
 
 \newcounter{partcount}[problemcount]
 
 \NewDocumentEnvironment{parts}{}{%
-  \setcounter{partcount}{0}%
-  \begin{enumerate}[label=(\alph*),ref=(\alph*)]%
+\setcounter{partcount}{0}%
+\begin{enumerate}[label=(\alph*),ref=(\alph*)]%
   \let\partproblem\item%
-}{%
-  \end{enumerate}%
-  \ifnum\value{problemcount}=4%
-    \qed%
-  \fi%
+  }{%
+\end{enumerate}%
+\ifnum\value{problemcount}=4%
+\ifbool{umtymp@showProfProb}{%
+\qed%
+}{}%
+\fi%
 }
 
 % Solution Environments
 \NewEnviron{solution}{%
-  \par\vspace{1em}%
-  \BODY%
-  \ifnum\value{problemcount}=4%
-    \qed%
+\par\vspace{1em}%
+\BODY%
+\ifnum\value{problemcount}=4%
+\ifbool{umtymp@showProfProb}{%
+\qed%
+}{}%
   \fi%
 }
 
@@ -90,18 +135,20 @@
 
 % Problem Command
 \newcommand{\problem}{%
-  \setcounter{figure}{0}%
-  \setcounter{equation}{0}%
-  \stepcounter{problemcount}%
-  \ifnum\value{problemcount}>1\newpage\fi%
-  \item%
-  \ifnum\value{problemcount}=4%
-    \textbf{Professional Problem.}\space%
+\setcounter{figure}{0}%
+\setcounter{equation}{0}%
+\stepcounter{problemcount}%
+\ifnum\value{problemcount}>1\ifbool{umtymp@oneProbPerPage}{\newpage}{}\fi%
+\item%
+\ifnum\value{problemcount}=4%
+\ifbool{umtymp@showProfProb}{%
+\textbf{Professional Problem.}\space%
+}{}%
   \fi%
 }
 
 % Figure/Equation Numbering
-\renewcommand{\thefigure}{\umtymp@week.\arabic{problemcount}.\arabic{figure}}
+\renewcommand{\thefigure}{\umtymp@prefix\arabic{problemcount}.\arabic{figure}}
 
 % Multialign Environment
 \makeatletter
