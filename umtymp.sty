@@ -53,6 +53,7 @@
 \newcommand{\dy}{\intdiff{y}}
 \newcommand{\pdy}{\diff{y}}
 \newcommand{\dydx}{\frac{\pdy}{\pdx}}
+\newcommand{\dydt}{\frac{\pdy}{\pdt}}
 \newcommand{\ddx}[1]{\frac{\mathrm{d}}{\pdx}\left(#1\right)}
 \newcommand{\ddt}[1]{\frac{\mathrm{d}}{\pdt}\left(#1\right)}
 \newcommand{\at}[2]{\left.#1\right|_{#2}}
@@ -92,6 +93,7 @@
 \newcommand{\braces}[1]{\left\{#1\right\}}
 \newcommand{\seq}[1]{\braces{#1_n}}
 \newcommand{\cont}[1]{\braces{#1, \cdots}}
+\newcommand{\deriv}[2]{\frac{\diff{#1}}{\diff{#2}}}
 
 % Problem Environment Setup
 \newcounter{problemcount}
@@ -134,12 +136,12 @@
 }
 
 % Problem Command
-\newcommand{\problem}{%
+\newcommand{\problem}[1][]{%
 \setcounter{figure}{0}%
 \setcounter{equation}{0}%
 \stepcounter{problemcount}%
-\ifnum\value{problemcount}>1\ifbool{umtymp@oneProbPerPage}{\newpage}{}\fi%
-\item%
+\ifnum\value{problemcount}>1\ifbool{umtymp@oneProbPerPage}{\newpage}{\vspace{0.5in}}\fi%
+\ifstrempty{#1}{\item}{\item[\textbf{(\umtymp@prefix #1)}]}%
 \ifnum\value{problemcount}=4%
 \ifbool{umtymp@showProfProb}{%
 \textbf{Professional Problem.}\space%
@@ -184,4 +186,3 @@
 }
 
 \endinput
-
